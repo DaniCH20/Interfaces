@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">CalculatorAppJava</string>
+    <string name="butt1">1</string>
+    <string name="butt2">2</string>
+    <string name="butt3">3</string>
+    <string name="butt4">4</string>
+    <string name="butt5">5</string>
+    <string name="butt6">6</string>
+    <string name="butt7">7</string>
+    <string name="butt8">8</string>
+    <string name="butt9">9</string>
+    <string name="butt0">0</string>
+    <string name="buttIgual">=</string>
+    <string name="buttSuma">+</string>
+    <string name="buttResta">-</string>
+    <string name="buttMulti">x</string>
+    <string name="buttDivi">/</string>
+    <string name="buttPoint">.</string>
+    <string name="buttDelete">DEL</string>
+    <string name="buttAC">AC</string>
+    <string name="txtTitulo">CALCULADORA</string>
+    <string name="buttParen"> ) </string>
+    <string name="buttParen2"> ( </string>
+    <string name="buttPotencia">x²</string>
+    <string name="buttPorcen">%</string>
+    <string name="txt"> </string>
+    <string name="buttRaiz"> √</string>
+</resources>
