@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">xmlMusic</string>
-    <string name="txtTitulo">Titulo</string>
-    <string name="txtGrupo">Grupo</string>
+    <string name="txtTitulo">Another One Bites the Dust</string>
+    <string name="txtGrupo">Queen</string>
     <string name="btnNext">Siguiente</string>
     <string name="btnPrevius">Anterior</string>
     <string name="btnPlay">Reproducir</string>
@@ -11,6 +11,6 @@
     <string name="compartir">compartir</string>
     <string name="letra">Letra de la cancion</string>
     <string name="lista">Lista de Canciones</string>
-    <string name="start">Inicio</string>
-    <string name="end">Final</string>
+    <string name="start">00:00</string>
+    <string name="end">00:00</string>
 </resources>
