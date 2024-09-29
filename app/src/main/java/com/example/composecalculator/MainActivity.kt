@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,22 +40,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-val CustomColorScheme = lightColorScheme(
-    primary = Color(0xFFD7DBDD), // Plomo
-    onPrimary = Color.Black,
-    secondary = Color(0xFFD4441A), // Naranja
-    onSecondary = Color.White,
-    background = Color(0xFF99A3A4), // Gris claro
-    onBackground = Color.Black,
-    surface = Color.White,
-    onSurface = Color.Black,
-)
-
-class CalculatorViewModel : ViewModel() {
-    var input: String = ""
-}
-
 @Composable
 fun ComposeCalculatorTheme(
     content: @Composable () -> Unit
@@ -66,24 +51,36 @@ fun ComposeCalculatorTheme(
     )
 }
 
+val CustomColorScheme = lightColorScheme(
+    primary = Color(0xFFD7DBDD), // Plomo
+    onPrimary = Color.Black,
+    secondary = Color(0xFFD4441A), // Naranja
+    onSecondary = Color.White,
+    background = Color(0xFF99A3A4), // Gris claro
+    onBackground = Color.Black,
+)
+class CalculatorViewModel : ViewModel() {
+    var input by mutableStateOf("") // Usar un estado mutable
+    fun appendInput(value: String) {// Añade el valor de los botones al input
+        input += value
+    }
+    fun clearInput() {// Vacia el input
+        input = ""
+    }
+}
 @Composable
 fun CalculatorScreen(modifier: Modifier = Modifier, viewModel: CalculatorViewModel) {
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
     if (isPortrait) {
-        // Diseño para modo vertical
         PortraitCalculator(modifier, viewModel)
     } else {
-        // Diseño para modo horizontal
         LandscapeCalculator(modifier, viewModel)
     }
 }
-
 @Composable
 fun PortraitCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
-
-    // Un diseño diferente para el modo horizontal
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -95,8 +92,6 @@ fun PortraitCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -115,7 +110,7 @@ fun PortraitCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
             ) {
                 // Mostrar el input actual
                 Text(
-                    text = inputState.value,
+                    text = viewModel.input,
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.surface
@@ -135,38 +130,37 @@ fun PortraitCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     .padding(bottom = 10.dp)
             ) {
                 Button(
-                    onClick = { onClick(".", { inputState.value += it }) },
-
+                    onClick = { viewModel.appendInput(".") },
                     modifier = Modifier
                         .weight(1f)
                         .padding(10.dp)
                         .testTag("buton."),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.background // Cambia el color aquí
+                        containerColor = MaterialTheme.colorScheme.background
                     )
                 ) {
                     Text(".", color = MaterialTheme.colorScheme.onBackground)
                 }
                 Button(
-                    onClick = { onClick("DEL", { inputState.value += it }) },
+                    onClick = { viewModel.clearInput() },
                     modifier = Modifier
                         .weight(1f)
                         .padding(10.dp)
                         .testTag("butonDEL"),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondary // Cambia el color aquí
+                        containerColor = MaterialTheme.colorScheme.secondary
                     )
                 ) {
                     Text("DEL", color = MaterialTheme.colorScheme.onSecondary)
                 }
                 Button(
-                    onClick = { onClick("AC", { inputState.value += it }) },
+                    onClick = { viewModel.clearInput() },
                     modifier = Modifier
                         .padding(10.dp)
                         .weight(1f)
                         .testTag("butonAC"),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondary // Cambia el color aquí
+                        containerColor = MaterialTheme.colorScheme.secondary
                     )
                 ) {
                     Text("AC", color = MaterialTheme.colorScheme.onSecondary)
@@ -179,7 +173,7 @@ fun PortraitCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     .padding(bottom = 10.dp)
             ) {
                 Button(
-                    onClick = { onClick("1", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("1") },
                     modifier = Modifier
                         .padding(10.dp)
                         .testTag("buton1"),
@@ -190,7 +184,7 @@ fun PortraitCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text("1", color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Button(
-                    onClick = { onClick("2", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("2") },
                     modifier = Modifier
                         .padding(10.dp)
                         .testTag("buton2"),
@@ -201,7 +195,7 @@ fun PortraitCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text("2", color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Button(
-                    onClick = { onClick("3", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("3") },
                     modifier = Modifier
                         .padding(10.dp)
                         .testTag("buton3"),
@@ -212,7 +206,7 @@ fun PortraitCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text("3", color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Button(
-                    onClick = { onClick("-", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("-") },
                     modifier = Modifier
                         .padding(3.dp)
                         .weight(1f)
@@ -224,7 +218,7 @@ fun PortraitCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text("-", color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Button(
-                    onClick = { onClick("+", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("+") },
                     modifier = Modifier
                         .padding(3.dp)
                         .weight(1f)
@@ -248,7 +242,7 @@ fun PortraitCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
 
             ) {
                 Button(
-                    onClick = { onClick("4", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("4") },
                     modifier = Modifier
                         .padding(10.dp)
                         .testTag("buton4"),
@@ -259,7 +253,7 @@ fun PortraitCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text("4", color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Button(
-                    onClick = { onClick("5", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("5") },
                     modifier = Modifier
                         .padding(10.dp)
                         .testTag("buton5"),
@@ -270,7 +264,7 @@ fun PortraitCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text("5", color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Button(
-                    onClick = { onClick("6", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("6") },
                     modifier = Modifier
                         .padding(10.dp)
                         .testTag("buton6"),
@@ -281,7 +275,7 @@ fun PortraitCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text("6", color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Button(
-                    onClick = { onClick("x", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("x") },
                     modifier = Modifier
                         .padding(3.dp)
                         .weight(1f)
@@ -293,7 +287,7 @@ fun PortraitCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text("X", color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Button(
-                    onClick = { onClick("/", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("/") },
                     modifier = Modifier
                         .padding(3.dp)
                         .weight(1f)
@@ -312,7 +306,7 @@ fun PortraitCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     .padding(bottom = 5.dp)
             ) {
                 Button(
-                    onClick = { onClick("7", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("7") },
                     modifier = Modifier
                         .padding(10.dp)
                         .testTag("buton7"),
@@ -323,7 +317,7 @@ fun PortraitCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text("7", color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Button(
-                    onClick = { onClick("8", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("8") },
                     modifier = Modifier
                         .padding(10.dp)
                         .testTag("buton8"),
@@ -334,7 +328,7 @@ fun PortraitCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text("8", color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Button(
-                    onClick = { onClick("9", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("9") },
                     modifier = Modifier
                         .padding(10.dp)
                         .testTag("buton9"),
@@ -345,7 +339,7 @@ fun PortraitCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text("9", color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Button(
-                    onClick = { onClick("=", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("=") },
                     modifier = Modifier
                         .padding(5.dp)
                         .weight(1f)
@@ -364,7 +358,7 @@ fun PortraitCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     .padding(bottom = 20.dp)
             ) {
                 Button(
-                    onClick = { onClick("0", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("0") },
                     modifier = Modifier
                         .padding(10.dp)
                         .weight(1f)
@@ -413,9 +407,8 @@ fun LandscapeCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     .fillMaxWidth()
                     .padding(bottom = 20.dp)
             ) {
-                // Mostrar el input actual
                 Text(
-                    text = inputState.value,
+                    text = viewModel.input,
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.surface
@@ -428,103 +421,103 @@ fun LandscapeCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     .padding(bottom = 10.dp)
             ) {
                 Button(
-                    onClick = { onClick("%", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("%") },
 
                     modifier = Modifier
                         .size(100.dp, 70.dp)
                         .padding(10.dp)
-                        .testTag("buton."),
+                        .testTag("buton%"),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.background // Cambia el color aquí
+                        containerColor = MaterialTheme.colorScheme.background
                     )
                 ) {
                     Text("%", color = MaterialTheme.colorScheme.onBackground)
                 }
                 Button(
-                    onClick = { onClick("DEL", { inputState.value += it }) },
+                    onClick = { viewModel.clearInput() },
                     modifier = Modifier
                         .size(100.dp, 70.dp)
                         .padding(10.dp)
                         .testTag("butonDEL"),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondary // Cambia el color aquí
+                        containerColor = MaterialTheme.colorScheme.secondary
                     )
                 ) {
                     Text("DEL", color = MaterialTheme.colorScheme.onSecondary)
                 }
                 Button(
-                    onClick = { onClick("AC", { inputState.value += it }) },
+                    onClick = { viewModel.clearInput() },
                     modifier = Modifier
                         .size(100.dp, 70.dp)
                         .padding(10.dp)
                         .testTag("butonAC"),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondary // Cambia el color aquí
+                        containerColor = MaterialTheme.colorScheme.secondary
                     )
                 ) {
                     Text("AC", color = MaterialTheme.colorScheme.onSecondary)
                 }
                 Button(
-                    onClick = { onClick("1", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("1") },
 
                     modifier = Modifier
                         .size(135.dp, 70.dp)
                         .padding(10.dp)
-                        .testTag("buton."),
+                        .testTag("buton1"),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary // Cambia el color aquí
+                        containerColor = MaterialTheme.colorScheme.primary
                     )
                 ) {
                     Text("1", color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Button(
-                    onClick = { onClick("2", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("2") },
 
                     modifier = Modifier
                         .size(135.dp, 70.dp)
                         .padding(10.dp)
-                        .testTag("buton."),
+                        .testTag("buton2"),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary // Cambia el color aquí
+                        containerColor = MaterialTheme.colorScheme.primary
                     )
                 ) {
                     Text("2", color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Button(
-                    onClick = { onClick("3", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("3") },
 
                     modifier = Modifier
                         .size(135.dp, 70.dp)
                         .padding(10.dp)
-                        .testTag("buton."),
+                        .testTag("buton3"),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary // Cambia el color aquí
+                        containerColor = MaterialTheme.colorScheme.primary
                     )
                 ) {
                     Text("3", color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Button(
-                    onClick = { onClick("+", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("+") },
 
                     modifier = Modifier
                         .size(80.dp)
                         .padding(10.dp)
-                        .testTag("buton."),
+                        .testTag("buton+"),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.background // Cambia el color aquí
+                        containerColor = MaterialTheme.colorScheme.background
                     )
                 ) {
                     Text("+", color = MaterialTheme.colorScheme.onBackground)
                 }
                 Button(
-                    onClick = { onClick("-", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("-") },
 
                     modifier = Modifier
                         .size(80.dp)
                         .padding(10.dp)
-                        .testTag("buton."),
+                        .testTag("buton-"),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.background // Cambia el color aquí
+                        containerColor = MaterialTheme.colorScheme.background
                     )
                 ) {
                     Text("-", color = MaterialTheme.colorScheme.onBackground)
@@ -537,11 +530,11 @@ fun LandscapeCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     .padding(bottom = 10.dp)
             ) {
                 Button(
-                    onClick = { onClick("(", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("(") },
                     modifier = Modifier
                         .size(100.dp, 70.dp)
                         .padding(10.dp)
-                        .testTag("buton1"),
+                        .testTag("buton("),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.background
                     )
@@ -549,11 +542,11 @@ fun LandscapeCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text("(", color = MaterialTheme.colorScheme.onBackground)
                 }
                 Button(
-                    onClick = { onClick("²", { inputState.value += it }) },
+                onClick = { viewModel.appendInput("²") },
                     modifier = Modifier
                         .size(100.dp, 70.dp)
                         .padding(10.dp)
-                        .testTag("buton2"),
+                        .testTag("butonPotencia"),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.background
                     )
@@ -561,11 +554,11 @@ fun LandscapeCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text("x²", color = MaterialTheme.colorScheme.onBackground)
                 }
                 Button(
-                    onClick = { onClick("0", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("0") },
                     modifier = Modifier
                         .size(100.dp, 70.dp)
                         .padding(10.dp)
-                        .testTag("buton3"),
+                        .testTag("buton0"),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.background
                     )
@@ -574,11 +567,11 @@ fun LandscapeCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                 }
 
                 Button(
-                    onClick = { onClick("4", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("4") },
                     modifier = Modifier
                         .size(135.dp, 70.dp)
                         .padding(10.dp)
-                        .testTag("buton-"),
+                        .testTag("buton4"),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary
                     )
@@ -586,11 +579,11 @@ fun LandscapeCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text("4", color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Button(
-                    onClick = { onClick("5", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("5") },
                     modifier = Modifier
                         .size(135.dp, 70.dp)
                         .padding(10.dp)
-                        .testTag("buton+"),
+                        .testTag("buton5"),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary
                     )
@@ -599,12 +592,12 @@ fun LandscapeCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text("5", color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Button(
-                    onClick = { onClick("6", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("6") },
                     modifier = Modifier
 
                         .size(135.dp, 70.dp)
                         .padding(10.dp)
-                        .testTag("buton+"),
+                        .testTag("buton6"),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary
                     )
@@ -614,27 +607,27 @@ fun LandscapeCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                 }
 
                 Button(
-                    onClick = { onClick("x", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("x") },
 
                     modifier = Modifier
                         .size(80.dp)
                         .padding(10.dp)
-                        .testTag("buton."),
+                        .testTag("butonx"),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.background // Cambia el color aquí
+                        containerColor = MaterialTheme.colorScheme.background
                     )
                 ) {
                     Text("X", color = MaterialTheme.colorScheme.onBackground)
                 }
                 Button(
-                    onClick = { onClick("/", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("/") },
 
                     modifier = Modifier
                         .size(80.dp)
                         .padding(10.dp)
-                        .testTag("buton."),
+                        .testTag("buton/"),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.background // Cambia el color aquí
+                        containerColor = MaterialTheme.colorScheme.background
                     )
                 ) {
                     Text("/", color = MaterialTheme.colorScheme.onBackground)
@@ -650,11 +643,11 @@ fun LandscapeCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
 
             ) {
                 Button(
-                    onClick = { onClick(")", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput(")") },
                     modifier = Modifier
                         .size(100.dp, 80.dp)
                         .padding(10.dp)
-                        .testTag("buton4"),
+                        .testTag("buton)"),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.background
                     )
@@ -662,11 +655,11 @@ fun LandscapeCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text(")", color = MaterialTheme.colorScheme.onBackground)
                 }
                 Button(
-                    onClick = { onClick("√", { inputState.value += it }) },
+                onClick = { viewModel.appendInput("1") },
                     modifier = Modifier
                         .size(100.dp, 70.dp)
                         .padding(10.dp)
-                        .testTag("buton5"),
+                        .testTag("butonRaiz"),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.background
                     )
@@ -674,11 +667,11 @@ fun LandscapeCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text("√", color = MaterialTheme.colorScheme.onBackground)
                 }
                 Button(
-                    onClick = { onClick(".", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput(".") },
                     modifier = Modifier
                         .size(100.dp, 70.dp)
                         .padding(10.dp)
-                        .testTag("buton6"),
+                        .testTag("buton."),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.background
                     )
@@ -686,11 +679,11 @@ fun LandscapeCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text(".", color = MaterialTheme.colorScheme.onBackground)
                 }
                 Button(
-                    onClick = { onClick("7", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("7") },
                     modifier = Modifier
                         .size(135.dp, 70.dp)
                         .padding(10.dp)
-                        .testTag("butonx"),
+                        .testTag("buton7"),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary
                     )
@@ -698,11 +691,11 @@ fun LandscapeCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text("7", color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Button(
-                    onClick = { onClick("8", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("8") },
                     modifier = Modifier
                         .size(135.dp, 70.dp)
                         .padding(10.dp)
-                        .testTag("buton/"),
+                        .testTag("buton8"),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary
                     )
@@ -710,11 +703,11 @@ fun LandscapeCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text("8", color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Button(
-                    onClick = { onClick("9", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("9") },
                     modifier = Modifier
                         .size(135.dp, 70.dp)
                         .padding(10.dp)
-                        .testTag("buton/"),
+                        .testTag("buton9"),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary
                     )
@@ -722,11 +715,11 @@ fun LandscapeCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
                     Text("9", color = MaterialTheme.colorScheme.onPrimary)
                 }
                 Button(
-                    onClick = { onClick("=", { inputState.value += it }) },
+                    onClick = { viewModel.appendInput("=") },
                     modifier = Modifier
                         .size(170.dp, 70.dp)
                         .padding(10.dp)
-                        .testTag("buton/"),
+                        .testTag("buton="),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary
                     )
@@ -743,9 +736,7 @@ fun LandscapeCalculator(modifier: Modifier, viewModel: CalculatorViewModel) {
 
 }
 
-fun onClick(value: String, onInputChange: (String) -> Unit) {
-    onInputChange(value) // Agrega el valor al input
-}
+
 
 
 @Preview(
