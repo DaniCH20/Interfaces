@@ -10,12 +10,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
@@ -27,6 +22,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -47,7 +43,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 MusicScreen(modifier = Modifier.padding(innerPadding), viewModel)
-
             }
         }
     }
@@ -55,11 +50,11 @@ class MainActivity : ComponentActivity() {
 
 class MusicViewModel : ViewModel() {
     var input by mutableStateOf("") // Usar un estado mutable
-    fun appendInput(value: String) {// Añade el valor de los botones al input
+    fun appendInput(value: String) { // Añade el valor de los botones al input
         input += value
     }
 
-    fun clearInput() {// Vacia el input
+    fun clearInput() { // Vacia el input
         input = ""
     }
 }
@@ -69,52 +64,152 @@ fun PortraitMusic(modifier: Modifier, viewModel: MusicViewModel) {
     Box(
         modifier = modifier
             .fillMaxSize()
+            .background(Color.LightGray) // Fondo de la pantalla
     ) {
-        Column {
-            Row {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp), // Agregar padding general
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically // Alineación vertical en el centro
+            ) {
                 Text(
-                    text = "Another One Bites The Dust",
-                    modifier = modifier
-                )
-
-            }
-
-            Row {
-                Text(
-                    text = "Queen",
-                    modifier = modifier
-                )
-            }
-            Row {
-                val imageModifier = Modifier
-                    .size(50.dp)
-                    .border(BorderStroke(1.dp, Color.Black))
-                    .background(Color.Yellow)
-                Image(
-                    painter = painterResource(id = R.drawable.aobtd),
-                    contentDescription = stringResource(id = R.string.imageDisc),
-                    contentScale = ContentScale.Fit,
+                    text = "                      Another One Bites The Dust",
                     modifier = Modifier
-                        .size(50.dp)
-                        .clip(CircleShape)
+                        .weight(1f) // Ocupa el espacio restante
+                        .padding(bottom = 16.dp) // Espaciado inferior
+
                 )
-            }
-            Row {
-                var sliderPosition by remember { mutableFloatStateOf(0f) }
-                Slider(
-                    value = sliderPosition,
-                    onValueChange = { sliderPosition = it }
-                )
-                Text(text = sliderPosition.toString())
-            }
-            Row {
-                Button(onClick = { viewModel.clearInput() }) {
-                    Text("f")
+
+                Button(
+                    onClick = { viewModel.clearInput() },
+                    modifier = Modifier.size(70.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.lista),
+                        contentDescription = "Compartir",
+                        contentScale = ContentScale.Fit
+                    )
                 }
             }
-            Row {
 
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                Text(
+                    text = "Queen",
+                    modifier = Modifier.padding(bottom = 16.dp) // Espaciado inferior
+                        .align(Alignment.CenterVertically)
+                )
             }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.aobtd),
+
+                    contentDescription = stringResource(id = R.string.imageDisc),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(400.dp) // Aumentar tamaño de la imagen
+                        .clip(CircleShape)
+                        .border(BorderStroke(1.dp, Color.Black))
+                        .padding(4.dp) // Espaciado interno de la imagen
+                )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                var sliderVolumen by remember { mutableFloatStateOf(0f) }
+                Slider(
+                    value = sliderVolumen,
+                    onValueChange = { sliderVolumen = it },
+                    modifier = Modifier
+                        .padding(vertical = 10.dp)
+                        .width(250.dp) // Ajusta el ancho
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(
+                    onClick = { viewModel.clearInput() },
+                    modifier = Modifier.size(70.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.texto),
+                        contentDescription = "Texto",
+                        contentScale = ContentScale.Fit
+                    )
+                }
+                Button(
+                    onClick = { viewModel.clearInput() },
+                    modifier = Modifier.size(70.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.compartir),
+                        contentDescription = "Compartir",
+                        contentScale = ContentScale.Fit
+                    )
+                }
+            }
+            var sliderPosition by remember { mutableFloatStateOf(0f) }
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = "Valor: ${sliderPosition.toFloat()}")
+                Text(text = "Valor: ${sliderPosition.toFloat()}")// Mostrar valor del slider
+            }
+            Slider(
+                value = sliderPosition,
+                onValueChange = { sliderPosition = it },
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(
+                    onClick = { viewModel.clearInput() },
+                    modifier = Modifier.size(70.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.previous),
+                        contentDescription = "Texto",
+                        contentScale = ContentScale.Fit
+                    )
+                }
+                Button(
+                    onClick = { viewModel.clearInput() },
+                    modifier = Modifier.size(70.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.next),
+                        contentDescription = "Compartir",
+                        contentScale = ContentScale.Fit
+                    )
+                }
+                Button(
+                    onClick = { viewModel.clearInput() },
+                    modifier = Modifier.size(70.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.play),
+                        contentDescription = "Compartir",
+                        contentScale = ContentScale.Fit
+                    )
+                }
+            }
+
 
         }
     }
